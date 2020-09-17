@@ -43,11 +43,11 @@ export default {
       }
     },
   },
-  mounted() {
+  beforeMount() {
     this.$axios
       .get("/post/list")
       .then((response) => {
-        this.postList = response.data;
+        this.postList = response.data.post_list;
         this.showList = this.postList;
       })
       .catch((err) => {

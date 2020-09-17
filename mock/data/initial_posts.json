@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "title": "What is Karate?",
+        "description": "Karate is an open-source general-purpose test-automation framework.",
+        "created_user_id": 1,
+        "updated_user_id": 1
+    },
+    {
+        "id": 2,
+        "title": "What is Selenium?",
+        "description": "SELENIUM is a free (open-source) automated testing framework.",
+        "created_user_id": 2,
+        "updated_user_id": 2
+    }
+]

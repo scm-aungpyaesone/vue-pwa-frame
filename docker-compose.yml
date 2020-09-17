@@ -1,0 +1,20 @@
+version: "3.7"
+
+services:
+  node:
+    image: node:lts-alpine
+    working_dir: /work
+    ports:
+      - 3000:8080
+    volumes:
+      - .:/work
+    command: /bin/sh -c "yarn install && yarn serve"
+
+  mock:
+    image: openjdk:latest
+    working_dir: /work
+    ports:
+      - 5000:5000
+    volumes:
+      - ./mock:/work
+    command: /bin/sh -c "java -jar karate-0.9.4.jar -m _mock_server_bulletinboard.feature -p 5000"

@@ -2,7 +2,7 @@ const constants = {
   /**
    * App title
    */
-  APP_TITLE: "SCM Bulletin Board",
+  APP_TITLE: "Bulletin Board",
 
 };
 

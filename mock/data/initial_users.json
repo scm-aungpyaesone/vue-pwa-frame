@@ -1,0 +1,41 @@
+[
+    {
+        "id": 1,
+        "name": "Aung Pyae Sone",
+        "email": "aungpyaesone@gmail.com",
+        "password": "APSpassword",
+        "profile_path": "images/avators/1600261772937.png",
+        "phone": "09672994240",
+        "address": "HtaukKyant, Mingalardon Township, Yangon",
+        "dob": "1997-06-29T00:00:00.000Z",
+        "created_user_id": 1,
+        "updated_user_id": 1,
+        "token": "RgqJh3tKUENgZYSZjMZHmnKNnAWMu9DmwPv8XsTDNFivFXu1n6zf1u45ZvoC5W7Q04vOrP8FSJnTxM9lkXEgUT8w9IDRASYzJ0OD"
+    },
+    {
+        "id": 2,
+        "name": "Ye Myat Thu",
+        "email": "yemyatthu@gmail.com",
+        "password": "YMTpassword",
+        "profile_path": "images/avators/1600261774947.png",
+        "phone": "09672994240",
+        "address": "North Dagon Township, Yangon",
+        "dob": "1999-03-25T00:00:00.000Z",
+        "created_user_id": 1,
+        "updated_user_id": 1,
+        "token": "v8cMzayVSouopP7ByBJIWR7bcYdjQaMrqA7oQXC2xTkw5DwbrTzdWNewD1Wq1QQzK2AIY7IwF7iBwBSfqhAtAGXCpTo2Ds7MnvWe"
+    },
+    {
+        "id": 3,
+        "name": "May Thu Khaing",
+        "email": "maythukhaing@gmail.com",
+        "password": "MTKpassword",
+        "profile_path": "images/avators/1600263895481.png",
+        "phone": "09672994240",
+        "address": "North Dagon Township, Yangon",
+        "dob": "1997-12-25T00:00:00.000Z",
+        "created_user_id": 1,
+        "updated_user_id": 1,
+        "token": "v8cMzayVSouopP7ByBJIWR7bcYdjQaMrqA7oQXC2xTkw5DwtestdWNewD1Wq1QQzK2AIY7IwF7iBwBSfqhAtAGXCpTo2Ds7MnvWe"
+    }
+]

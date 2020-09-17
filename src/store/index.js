@@ -30,20 +30,9 @@ export default new Vuex.Store({
   },
   getters: {
     isLoggedIn: (state) => !!state.user,
-    userType: (state) => {
-      if (state.user && state.user.data.user_type) {
-        return state.user.data.user_type;
-      }
-      return -1;
-    },
-    userId: (state) => {
-      if (state.user && state.user.data.user_id) {
-        return state.user.data.user_id;
-      }
-    },
     userName: (state) => {
-      if (state.user && state.user.data.user_name) {
-        return state.user.data.user_name;
+      if (state.user && state.user.name) {
+        return state.user.name;
       }
     },
   },
