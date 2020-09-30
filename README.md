@@ -31,6 +31,6 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
     ```
     java -jar karate-0.9.4.jar -m _mock_server_bulletinboard.feature -p 5000
     ```
-1) access ```http://localhost:3080/``` for client
+1) access ```http://localhost:8080/``` for client
 1) access ```http://127.0.0.1:5000/``` for Karate mock server
 1) keep on learning to build vue project (You can surf more Karate mock APIs in `_mock_server_bulletinboard.feature`.)
