@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <!-- <v-app>
     <v-card color="lighten-4" flat height="200px" tile>
       <v-toolbar dark color="primary" tile>
         <v-container>
@@ -41,7 +41,8 @@
         <router-view></router-view>
       </v-container>
     </v-card>
-  </v-app>
+  </v-app> -->
+   <router-view></router-view>
 </template>
 <script src="../services/components/layout.js">
 </script>

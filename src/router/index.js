@@ -1,27 +1,40 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
-import Login from "../pages/user/Login";
-import PostList from "../pages/post/PostList";
-import store from "../store";
+// import Login from "../pages/user/Login";
+// import PostList from "../pages/post/PostList";
+import CanvasMap from "../pages/canvas/CanvasMap";
+import CanvasDetail from "../pages/canvas/CanvasDetail";
+// import store from "../store";
 
 Vue.use(VueRouter);
 
 const routes = [
+  // {
+  //   path: "/login",
+  //   name: "login",
+  //   component: Login,
+  // },
+  // {
+  //   path: "/post/list",
+  //   name: "post-list",
+  //   component: PostList,
+  // },
   {
-    path: "/login",
-    name: "login",
-    component: Login,
+    path: "/canvas",
+    name: "canvas",
+    component: CanvasMap,
   },
   {
-    path: "/post/list",
-    name: "post-list",
-    component: PostList,
+    path: "/canvas/:cameraId",
+    name: "canvas-detail",
+    component: CanvasDetail,
+    props: true,
   },
-  {
-    path: "/*",
-    redirect: "/post/list",
-  },
+  // {
+  //   path: "/*",
+  //   redirect: "/post/list",
+  // },
 ];
 
 const router = new VueRouter({
@@ -32,12 +45,12 @@ const router = new VueRouter({
 /**
  * This is to handle and check authentication for routing.
  */
-router.beforeEach((to, from, next) => {
-  const loggedIn = store.getters.isLoggedIn;
-  if (!loggedIn && to.name != "login") {
-    return next("/login");
-  }
-  next();
-});
+// router.beforeEach((to, from, next) => {
+//   const loggedIn = store.getters.isLoggedIn;
+//   if (!loggedIn && to.name != "login") {
+//     return next("/login");
+//   }
+//   next();
+// });
 
 export default router;
