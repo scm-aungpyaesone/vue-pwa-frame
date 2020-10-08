@@ -131,8 +131,8 @@ body {
   padding: 10px;
 }
 #draggable-container {
-  width: 100vw;
-  height: 100vh;
+  width: 350px;
+  height: 640px;
   background-color: #666;
   position: absolute;
 }
