@@ -1,0 +1,505 @@
+openapi: 3.0.2
+servers:
+  - url: http://localhost:5000
+info:
+  description: This is API Doc for Bulletinboard Karate Mock Server.
+  title: Swagger API Doc for Bulletinboard
+  version: 1.0.6-SNAPSHOT
+paths:
+  /auth/login:
+    post:
+      description: Login API
+      requestBody:
+        description: Login Json Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: aungpyaesone@gmail.com
+                password:
+                  type: string
+                  example: APSpassword
+      responses:
+        "200":
+          description: Successful Login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 1
+                  name:
+                    type: string
+                    example: Aung Pyae Sone
+                  email:
+                    type: string
+                    example: aungpyaesone@gmail.com
+                  token:
+                    type: string
+                    example: RgqJh3tKUENgZYSZjMZHmnK
+                  token_type:
+                    type: string
+                    example: Bearer
+        "401":
+          description: Authenticated Failure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Incorrect Email or Password.
+  /auth/logout:
+    post:
+      description: Logout API
+      responses:
+        "204":
+          description: Successful Logout
+  /get/avator/{userId}:
+    get:
+      description: Get Profile Picture By user id
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: Successful Get Profile
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  /user/list:
+    get:
+      description: Get User List
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer RgqJh3tKUENgZYSZjMZH
+          required: true
+      responses:
+        "200":
+          description: Successfully Get User List
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_list:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: Aung Pyae Sone
+                        email:
+                          type: string
+                          example: aungpyaesone@gmail.com
+                        profile_path:
+                          type: string
+                          example: images/avators/1600261772937.png
+                        phone:
+                          type: string
+                          example: 09672994240
+                        address:
+                          type: string
+                          example: HtaukKyant, Mingalardon Township, Yangon
+                        dob:
+                          type: string
+                          example: 1997-06-29T00:00:00.000Z
+                        created_user_id:
+                          type: integer
+                          example: 1
+                        updated_user_id:
+                          type: integer
+                          example: 1
+        "401":
+          description: Authenticated Failure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
+  /save/profile_picture:
+    post:
+      description: Saving Profile Picture
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer RgqJh3tKUENgZYSZjMZH
+          required: true
+      requestBody:
+        description: Login Json Body
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "200":
+          description: Successful Save Profile Picture
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profile_path:
+                    type: string
+                    example: images/avators/1600261772937.png
+        "401":
+          description: Authenticated Failure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
+  /create/user:
+    post:
+      description: Create User
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer RgqJh3tKUENgZYSZjMZH
+          required: true
+      requestBody:
+        description: Create User Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Aung Pyae Sone
+                email:
+                  type: string
+                  example: aungpyaesone@gmail.com
+                password:
+                  type: string
+                  example: APSpassword
+                profile_path:
+                  type: string
+                  example: images/avators/1600261772937.png
+                phone:
+                  type: string
+                  example: 09672994240
+                address:
+                  type: string
+                  example: HtaukKyant, Mingalardon Township, Yangon
+                dob:
+                  type: string
+                  example: 1997-06-29T00:00:00.000Z
+      responses:
+        "200":
+          description: Successfully Created User
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Created New User Successfully.
+        "401":
+          description: Authenticated Failure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
+  /update/user/{userId}:
+    post:
+      description: Create User
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer RgqJh3tKUENgZYSZjMZH
+          required: true
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        description: Update User Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Aung Pyae Sone
+                phone:
+                  type: string
+                  example: 09672994240
+                address:
+                  type: string
+                  example: HtaukKyant, Mingalardon Township, Yangon
+                dob:
+                  type: string
+                  example: 1997-06-29T00:00:00.000Z
+      responses:
+        "200":
+          description: Successfully Updated User
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Updated New User Successfully.
+        "401":
+          description: Authenticated Failure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
+  /delete/user/{userId}:
+    delete:
+      description: Delete User
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer RgqJh3tKUENgZYSZjMZH
+          required: true
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: Successfully Deleted User. (This API just only adds "deleted_user_id" to userlist.)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Deleted User Successfully.
+        "401":
+          description: Authenticated Failure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
+  /post/list:
+    get:
+      description: Get Post List
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer RgqJh3tKUENgZYSZjMZH
+          required: true
+      responses:
+        "200":
+          description: Successfully Get Post List
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  post_list:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        title:
+                          type: string
+                          example: What is Karate?
+                        description:
+                          type: string
+                          example: Karate is an open-source general-purpose test-automation framework.
+                        created_user_id:
+                          type: integer
+                          example: 1
+                        updated_user_id:
+                          type: integer
+                          example: 1
+        "401":
+          description: Authenticated Failure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
+  /create/post:
+    post:
+      description: Create Post
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer RgqJh3tKUENgZYSZjMZH
+          required: true
+      requestBody:
+        description: Create Post Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: What is Karate?
+                description:
+                  type: string
+                  example: Karate is an open-source general-purpose test-automation framework.
+      responses:
+        "200":
+          description: Successfully Created Post
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Created New Post Successfully.
+        "401":
+          description: Authenticated Failure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
+  /update/post/{postId}:
+    post:
+      description: Create Post
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer RgqJh3tKUENgZYSZjMZH
+          required: true
+        - in: path
+          name: postId
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        description: Update Post Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: What is Karate?
+                description:
+                  type: string
+                  example: Karate is an open-source general-purpose test-automation framework.
+      responses:
+        "200":
+          description: Successfully Updated Post
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Updated Post Successfully.
+        "401":
+          description: Authenticated Failure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
+  /delete/post/{postId}:
+    delete:
+      description: Delete Post
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer RgqJh3tKUENgZYSZjMZH
+          required: true
+        - in: path
+          name: postId
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: Successfully Deleted Post. (This API just only adds "deleted_user_id" to userlist.)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Deleted Post Successfully.
+        "401":
+          description: Authenticated Failure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized

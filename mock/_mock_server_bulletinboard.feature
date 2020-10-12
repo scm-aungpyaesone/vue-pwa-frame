@@ -356,7 +356,7 @@ Feature: mock server for bulletinboard
                         }
                         if(updated) {
                             response = {
-                                message : "Updated New Post Successfully."
+                                message : "Updated Post Successfully."
                             };
                             return {response: response, status: 200};
                         }
@@ -471,7 +471,7 @@ Feature: mock server for bulletinboard
         * def responseStatus = ctx.status
         * def response = ctx.response
 
-    # /delete/post/{id}
+    # Delete /delete/post/{id}
     Scenario: pathMatches("/delete/post/{id}") && methodIs("delete")
         * eval postId = pathParams.id
         * def ctx = deletePost(requestHeaders, request, postId)
