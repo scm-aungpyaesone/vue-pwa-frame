@@ -5,6 +5,7 @@ import VueRouter from "vue-router";
 // import PostList from "../pages/post/PostList";
 import CanvasMap from "../pages/canvas/CanvasMap";
 import CanvasDetail from "../pages/canvas/CanvasDetail";
+import ImageDiff from "../pages/canvas/ImageDiff";
 // import store from "../store";
 
 Vue.use(VueRouter);
@@ -30,6 +31,11 @@ const routes = [
     name: "canvas-detail",
     component: CanvasDetail,
     props: true,
+  },
+  {
+    path: "/image-diff",
+    name: "image-dff",
+    component: ImageDiff,
   },
   // {
   //   path: "/*",
