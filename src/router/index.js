@@ -5,7 +5,7 @@ import VueRouter from "vue-router";
 // import PostList from "../pages/post/PostList";
 import CanvasMap from "../pages/canvas/CanvasMap";
 import CanvasDetail from "../pages/canvas/CanvasDetail";
-import ImageDiff from "../pages/canvas/ImageDiff";
+// import ImageDiff from "../pages/canvas/ImageDiff";
 import SheetList from "../pages/canvas/SheetList";
 import SheetDetail from "../pages/canvas/SheetDetail";
 // import store from "../store";
@@ -34,25 +34,25 @@ const routes = [
     component: CanvasDetail,
     props: true,
   },
-  {
-    path: "/image-diff",
-    name: "image-dff",
-    component: ImageDiff,
-  },
+  // {
+  //   path: "/image-diff",
+  //   name: "image-dff",
+  //   component: ImageDiff,
+  // },
   {
     path: "/sheet-list",
     name: "sheet-list",
     component: SheetList,
   },
   {
-    path: "/sheet-detail",
+    path: "/sheet-detail/:sheetId",
     name: "sheet-detail",
     component: SheetDetail,
   },
-  // {
-  //   path: "/*",
-  //   redirect: "/post/list",
-  // },
+  {
+    path: "/*",
+    redirect: "/sheet-list",
+  },
 ];
 
 const router = new VueRouter({

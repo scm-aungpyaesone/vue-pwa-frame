@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <v-app>
     <div class="sheet-thumbnail">
       <canvas id="thumbnail" width="180" height="120"></canvas>
     </div>
     <div class="sheet">
-      <div class="current-image" id="current-image">
+      <div v-if="currentImagePath" class="current-image" id="current-image">
         <template v-if="showDiff">
           <div
             v-for="diffArea in diffAreaList"
@@ -15,7 +15,7 @@
         </template>
         <img :src="getSrc(currentImagePath)" id="imgBefore" @load="takeThumbnailImage" />
       </div>
-      <div class="prev-image">
+      <div v-if="previousImagePath" class="prev-image">
         <img :src="getSrc(previousImagePath)" id="imgAfter" />
       </div>
       <div class="result-image">
@@ -23,11 +23,25 @@
       </div>
     </div>
     <div class="sheet-panel">
-      <div class="panel-btn" @click="findDifferences()"><img class="panel-img" :src="getSrc('layers.png')"/></div>
-      <div class="panel-btn"><img class="panel-img" :src="getSrc('history.png')"/></div>
+      <div class="panel-btn" @click="findDifferences()">
+        <img class="panel-img" :src="getSrc('layers.png')" />
+      </div>
+      <div class="panel-btn" @click="moveToPrevious()">
+        <img class="panel-img" :src="getSrc('history.png')" />
+      </div>
     </div>
-    <div class="sheet-slider">sheet slider</div>
-  </div>
+    <div class="sheet-slider">
+      <v-slider
+        v-model="currentImageIdx"
+        :tick-labels="ticksLabels"
+        :max="ticksLabels.length - 1"
+        step="1"
+        ticks="always"
+        tick-size="4"
+        @change="selectSlider"
+      ></v-slider>
+    </div>
+  </v-app>
 </template>
 <style scoped>
 .sheet {
@@ -52,6 +66,7 @@
   height: 90px;
   bottom: 0;
   background: #fff;
+  padding: 15px;
 }
 .sheet-panel {
   position: absolute;
@@ -79,35 +94,44 @@
   display: inline-block;
 }
 .diff-area {
-    position: absolute;
-    border: 1px solid;
-    background: #f707c7;
-    opacity: 0.5;
+  position: absolute;
+  border: 1px solid;
+  background: #f707c7;
+  opacity: 0.5;
 }
 </style>
 <script>
-import html2canvas from 'html2canvas';
+import html2canvas from "html2canvas";
 import pixelmatch from "pixelmatch";
+import constants from "../../constants";
 export default {
   data() {
     return {
       diffAreaList: [],
       showDiff: false,
-      currentImagePath: "image-diff/construction_map_2.jpg",
-      previousImagePath: "image-diff/construction_map_4.jpg"
+      currentImagePath: null,
+      previousImagePath: null,
+      currentImageIdx: 0
     };
   },
   computed: {
     getSrc() {
       return img => require(`../../assets/images/${img}`);
+    },
+    ticksLabels() {
+      return constants.IMAGE_DIFF.map(image => image.date);
     }
   },
   methods: {
     takeThumbnailImage() {
-      html2canvas(document.getElementById("current-image")).then(function(canvas) {
+      html2canvas(document.getElementById("current-image")).then(function(
+        canvas
+      ) {
+        if (canvas.width && canvas.height) {
           let thumbnail = document.getElementById("thumbnail");
           let ctx = thumbnail.getContext("2d");
           ctx.drawImage(canvas, 0, 0, 178, 112);
+        }
       });
     },
     findDifferences() {
@@ -131,10 +155,9 @@ export default {
       );
       const hght = imgDataBefore.height;
       const wdth = imgDataBefore.width;
-      
-      let imgDataOutput = new ImageData(wdth, hght);
 
-      let numDiffPixels = pixelmatch(
+      let imgDataOutput = new ImageData(wdth, hght);
+      pixelmatch(
         imgDataBefore.data,
         imgDataAfter.data,
         imgDataOutput.data,
@@ -142,11 +165,9 @@ export default {
         hght,
         { threshold: 0.1, includeAA: true }
       );
-      console.log(numDiffPixels);
-      
+
       this.writeResultToPage(imgDataOutput);
       const notMatchAreaList = this.findAllDifferencePixels(imgDataOutput);
-      console.log(notMatchAreaList);
       this.diffAreaList = this.markDiffAreaList(notMatchAreaList);
       this.showDiff = true;
     },
@@ -306,9 +327,36 @@ export default {
       }
       return tmp;
     },
+    selectSlider() {
+      this.diffAreaList = [];
+      this.currentImagePath =
+        constants.IMAGE_DIFF[this.currentImageIdx].image_path;
+      this.previousImagePath =
+        this.currentImageIdx - 1 < 0
+          ? constants.IMAGE_DIFF[this.currentImageIdx].image_path
+          : constants.IMAGE_DIFF[this.currentImageIdx - 1].image_path;
+    },
+    moveToPrevious() {
+      this.currentImageIdx =
+        this.currentImageIdx - 1 < 0
+          ? this.currentImageIdx
+          : this.currentImageIdx - 1;
+      this.selectSlider();
+    }
   },
   updated() {
-      this.takeThumbnailImage();
+    this.takeThumbnailImage();
+  },
+  mounted() {
+    const tmpIdx = constants.IMAGE_DIFF.findIndex(
+      image => image.id === this.$route.params.sheetId
+    );
+    if (tmpIdx < 0) {
+      this.$router.push({ name: "sheet-list" });
+    } else {
+      this.currentImageIdx = tmpIdx;
+      this.selectSlider();
+    }
   }
 };
 </script>
