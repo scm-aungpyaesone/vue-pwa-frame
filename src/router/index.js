@@ -6,6 +6,8 @@ import VueRouter from "vue-router";
 import CanvasMap from "../pages/canvas/CanvasMap";
 import CanvasDetail from "../pages/canvas/CanvasDetail";
 import ImageDiff from "../pages/canvas/ImageDiff";
+import SheetList from "../pages/canvas/SheetList";
+import SheetDetail from "../pages/canvas/SheetDetail";
 // import store from "../store";
 
 Vue.use(VueRouter);
@@ -36,6 +38,16 @@ const routes = [
     path: "/image-diff",
     name: "image-dff",
     component: ImageDiff,
+  },
+  {
+    path: "/sheet-list",
+    name: "sheet-list",
+    component: SheetList,
+  },
+  {
+    path: "/sheet-detail",
+    name: "sheet-detail",
+    component: SheetDetail,
   },
   // {
   //   path: "/*",

@@ -1,7 +1,10 @@
 <template>
-  <div ref="test" class="canvas-container">
-    <div class="image-box">
-      <div class="image-sub-box">
+  <div>
+    <div class="sheet-thumbnail">
+      <canvas id="thumbnail" width="180" height="120"></canvas>
+    </div>
+    <div class="sheet">
+      <div class="current-image" id="current-image">
         <template v-if="showDiff">
           <div
             v-for="diffArea in diffAreaList"
@@ -10,39 +13,104 @@
             :style="{ width:diffArea.width+ 'px', height: diffArea.height+ 'px', top: diffArea.position.x+ 'px', left: diffArea.position.y+ 'px' }"
           ></div>
         </template>
-        <img
-          src="../../assets/images/image-diff/construction_map_1.jpg"
-          style="border: 1px solid black;"
-          id="imgBefore"
-        />
+        <img :src="getSrc(currentImagePath)" id="imgBefore" @load="takeThumbnailImage" />
       </div>
-
-      <div>
-        <img
-          id="imgAfter"
-          src="../../assets/images/image-diff/construction_map_3.jpg"
-          style="border: 1px solid black;display:none;"
-        />
+      <div class="prev-image">
+        <img :src="getSrc(previousImagePath)" id="imgAfter" />
+      </div>
+      <div class="result-image">
+        <canvas id="cnvDiff"></canvas>
       </div>
     </div>
-    <p>
-      <button id="diff" class="js-compareImages" @click="start">compare images</button>
-      <canvas id="cnvDiff" style="border: 1px solid black; margin: 10px;display:none;"></canvas>
-    </p>
-    <p id="result"></p>
+    <div class="sheet-panel">
+      <div class="panel-btn" @click="findDifferences()"><img class="panel-img" :src="getSrc('layers.png')"/></div>
+      <div class="panel-btn"><img class="panel-img" :src="getSrc('history.png')"/></div>
+    </div>
+    <div class="sheet-slider">sheet slider</div>
   </div>
 </template>
+<style scoped>
+.sheet {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+}
+.sheet-thumbnail {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: 1px solid black;
+  width: 180px;
+  height: 120px;
+  background: #fff;
+  z-index: 100;
+}
+.sheet-slider {
+  position: absolute;
+  border-top: 1px solid;
+  width: 100vw;
+  height: 90px;
+  bottom: 0;
+  background: #fff;
+}
+.sheet-panel {
+  position: absolute;
+  bottom: 90px;
+  display: inline-flex;
+}
+.panel-btn {
+  width: 50px;
+  height: 50px;
+  margin: 5px;
+  cursor: pointer;
+  padding: 5px;
+}
+.panel-img {
+  width: 40px;
+}
+.prev-image {
+  display: none;
+}
+.result-image {
+  display: none;
+}
+.current-image {
+  position: relative;
+  display: inline-block;
+}
+.diff-area {
+    position: absolute;
+    border: 1px solid;
+    background: #f707c7;
+    opacity: 0.5;
+}
+</style>
 <script>
+import html2canvas from 'html2canvas';
 import pixelmatch from "pixelmatch";
 export default {
   data() {
     return {
       diffAreaList: [],
-      showDiff: false
+      showDiff: false,
+      currentImagePath: "image-diff/construction_map_2.jpg",
+      previousImagePath: "image-diff/construction_map_4.jpg"
     };
   },
+  computed: {
+    getSrc() {
+      return img => require(`../../assets/images/${img}`);
+    }
+  },
   methods: {
-    start() {
+    takeThumbnailImage() {
+      html2canvas(document.getElementById("current-image")).then(function(canvas) {
+          let thumbnail = document.getElementById("thumbnail");
+          let ctx = thumbnail.getContext("2d");
+          ctx.drawImage(canvas, 0, 0, 178, 112);
+      });
+    },
+    findDifferences() {
       this.diffAreaList = [];
       let cnvBefore = this.convertImageToCanvas("imgBefore");
       let cnvAfter = this.convertImageToCanvas("imgAfter");
@@ -61,10 +129,9 @@ export default {
         cnvAfter.width,
         cnvAfter.height
       );
-
       const hght = imgDataBefore.height;
       const wdth = imgDataBefore.width;
-
+      
       let imgDataOutput = new ImageData(wdth, hght);
 
       let numDiffPixels = pixelmatch(
@@ -76,9 +143,15 @@ export default {
         { threshold: 0.1, includeAA: true }
       );
       console.log(numDiffPixels);
+      
+      this.writeResultToPage(imgDataOutput);
+      const notMatchAreaList = this.findAllDifferencePixels(imgDataOutput);
+      console.log(notMatchAreaList);
+      this.diffAreaList = this.markDiffAreaList(notMatchAreaList);
+      this.showDiff = true;
+    },
+    findAllDifferencePixels(imgDataOutput) {
       let indexPixel = 0;
-      // let prePixel = null;
-      let areaList = [];
       let notMatchAreaList = [];
       for (let y = 0; y < imgDataOutput.height; y++) {
         for (let x = 0; x < imgDataOutput.width; x++) {
@@ -121,7 +194,10 @@ export default {
       notMatchAreaList = notMatchAreaList.sort((a, b) =>
         Object.keys(a).length < Object.keys(b).length ? 1 : -1
       );
-      console.log(notMatchAreaList);
+      return notMatchAreaList;
+    },
+    markDiffAreaList(notMatchAreaList) {
+      let areaList = [];
       notMatchAreaList.forEach(area => {
         let pixelXList = Object.values(area)
           .map(pixel => pixel.x)
@@ -194,7 +270,6 @@ export default {
             break;
           }
         }
-        console.log(currentRangeX);
         if (!alreadyExisted) {
           areaList.push({
             id: "diff-area" + areaList.length,
@@ -207,17 +282,7 @@ export default {
           });
         }
       });
-      console.log(areaList);
-      this.diffAreaList = areaList;
-      this.writeResultToPage(imgDataOutput);
-      this.showDiff = true;
-    },
-    generateArrayRange(startNum, endNum) {
-      let tmp = [];
-      for (let idx = startNum; idx <= endNum; idx++) {
-        tmp.push(idx);
-      }
-      return tmp;
+      return areaList;
     },
     convertImageToCanvas(imageID) {
       let image = document.getElementById(imageID);
@@ -233,28 +298,17 @@ export default {
       canvas.height = imgDataOutput.height;
       let ctx = canvas.getContext("2d");
       ctx.putImageData(imgDataOutput, 0, 0);
-      let result = document.getElementById("result");
-      result.appendChild(ctx.canvas);
-    }
+    },
+    generateArrayRange(startNum, endNum) {
+      let tmp = [];
+      for (let idx = startNum; idx <= endNum; idx++) {
+        tmp.push(idx);
+      }
+      return tmp;
+    },
+  },
+  updated() {
+      this.takeThumbnailImage();
   }
 };
 </script>
-<style lang="postcss" scoped>
-.canvas-container {
-  width: 100vw;
-  height: 100vh;
-  cursor: pointer;
-}
-.diff-area {
-  position: absolute;
-  border: 1px solid;
-  background: #f707c7;
-  opacity: 0.5;
-}
-.image-box {
-  overflow: scroll;
-}
-.image-sub-box {
-  position: relative;
-}
-</style>
