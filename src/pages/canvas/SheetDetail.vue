@@ -115,15 +115,30 @@ export default {
     };
   },
   computed: {
+    /**
+     * This is to get source of image.
+     * @param {string} img image path
+     * @returns image
+     */
     getSrc() {
       return img => require(`../../assets/images/${img}`);
     },
+    /**
+     * This is to select image date as tick labels from image object list.
+     * @returns image date tick labels
+     */
     ticksLabels() {
       return constants.IMAGE_DIFF.map(image => image.date);
     }
   },
   methods: {
+    /**
+     * This is to take thumbnail photo of div (including hightlight areas).
+     * This will show thumbnail image at the top of screen.
+     * @return void
+     */
     takeThumbnailImage() {
+      // used html2canvas library to take div capture
       html2canvas(document.getElementById("current-image")).then(function(
         canvas
       ) {
@@ -134,6 +149,10 @@ export default {
         }
       });
     },
+    /**
+     * This is to start find differences between two images.
+     * @returns void
+     */
     findDifferences() {
       this.diffAreaList = [];
       let cnvBefore = this.convertImageToCanvas("imgBefore");
@@ -157,6 +176,7 @@ export default {
       const wdth = imgDataBefore.width;
 
       let imgDataOutput = new ImageData(wdth, hght);
+      // used pixelmatch library to get hightlight output
       pixelmatch(
         imgDataBefore.data,
         imgDataAfter.data,
@@ -171,6 +191,12 @@ export default {
       this.diffAreaList = this.markDiffAreaList(notMatchAreaList);
       this.showDiff = true;
     },
+    /**
+     *  This is to find differnce pixels of two images.
+     *  Will get only draft of differences (i.e. draft image with red color hightlight.)
+     * @param {ImageData} imgDataOutput image output data
+     * @returns {array} notMatchAreaList notMatchPixelPoints
+     */
     findAllDifferencePixels(imgDataOutput) {
       let indexPixel = 0;
       let notMatchAreaList = [];
@@ -187,6 +213,7 @@ export default {
               notMatchAreaList.push(tmpObj);
             } else {
               let addToAreaList = false;
+              // checking neighbour pixels
               for (let idx = 0; idx < notMatchAreaList.length; idx++) {
                 if (
                   notMatchAreaList[idx][`x${x - 1}y${y}`] ||
@@ -217,6 +244,12 @@ export default {
       );
       return notMatchAreaList;
     },
+
+    /**
+     * This is to mark difference area list.
+     * This will reduce areas that overlay each others.
+     * @param {array} notMatchAreaList
+     */
     markDiffAreaList(notMatchAreaList) {
       let areaList = [];
       notMatchAreaList.forEach(area => {
@@ -262,6 +295,7 @@ export default {
           );
           let tmpCheckX = currentRangeX.filter(x => tmpRangeX.includes(x));
           let tmpCheckY = currentRangeY.filter(y => tmpRangeY.includes(y));
+          // check diff area overlay or not
           if (tmpCheckX.length && tmpCheckY.length) {
             alreadyExisted = true;
             if (tmpRangeX[0] - currentRangeX[0] > 0) {
@@ -305,6 +339,11 @@ export default {
       });
       return areaList;
     },
+    /**
+     * This is to convert image to canvas to compare.
+     * @param {string} imageID
+     * @returns canvas
+     */
     convertImageToCanvas(imageID) {
       let image = document.getElementById(imageID);
       let canvas = document.createElement("canvas");
@@ -313,6 +352,11 @@ export default {
       canvas.getContext("2d").drawImage(image, 0, 0);
       return canvas;
     },
+
+    /**
+     * This is to write the output difference images.
+     * @param {ImageData} imgDataOutput
+     */
     writeResultToPage(imgDataOutput) {
       let canvas = document.getElementById("cnvDiff"); //  new HTMLCanvasElement();
       canvas.width = imgDataOutput.width;
@@ -320,6 +364,12 @@ export default {
       let ctx = canvas.getContext("2d");
       ctx.putImageData(imgDataOutput, 0, 0);
     },
+    /**
+     * This is tp generate array range (e.g (10,15) will get [10,11,12,13,14,15])
+     * @param {number} startNum
+     * @param {number} endNum
+     * @returns generateRange
+     */
     generateArrayRange(startNum, endNum) {
       let tmp = [];
       for (let idx = startNum; idx <= endNum; idx++) {
@@ -327,6 +377,10 @@ export default {
       }
       return tmp;
     },
+    /**
+     * This is to handle selection of slider.
+     * @returns void
+     */
     selectSlider() {
       this.diffAreaList = [];
       this.currentImagePath =
@@ -336,6 +390,10 @@ export default {
           ? constants.IMAGE_DIFF[this.currentImageIdx].image_path
           : constants.IMAGE_DIFF[this.currentImageIdx - 1].image_path;
     },
+    /**
+     * This is to move previous image.
+     * @returns void
+     */
     moveToPrevious() {
       this.currentImageIdx =
         this.currentImageIdx - 1 < 0
