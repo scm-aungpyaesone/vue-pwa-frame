@@ -211,6 +211,44 @@ Feature: mock server for bulletinboard
                 }
             """
 
+        * def changePwd = 
+            """
+                function(header, request, userId) {
+                    var response = {
+                        error : "Unauthorized"
+                    };
+                    if(!checkAuthToken(header)) {
+                        return {response: response, status: 401};
+                    }
+                    var updatedUser = findUserBySpecificTypeFuc("token", header["Authorization"][0].split(" ")[1]);
+                    if(updatedUser) {
+                        var updated = false;
+                        
+                        karate.log(updatedUser);
+                        for(var index = 0; index < userList.length; index++) {
+                            if(userList[index].id == userId) {
+                                if(request.old_password === userList[index].password) {
+                                    userList[index].password = request.new_password;
+                                    userList[index].updated_user_id = updatedUser.id;
+                                    updated = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if(updated) {
+                            response = {
+                                message : "Updated New Password Successfully."
+                            };
+                            return {response: response, status: 200};
+                        }
+                        response = {
+                            error : "Please insert valid passwords!"
+                        };
+                        return {response: response, status: 422};
+                    }
+                }
+            """
+
         * def updateUser = 
             """
                 function(header, request, userId) {
@@ -431,6 +469,13 @@ Feature: mock server for bulletinboard
         * def responseStatus = ctx.status
         * def response = ctx.response
     
+    # Post /user/change-password/{id}
+    Scenario: pathMatches("/user/change-password/{id}") && methodIs("post")
+        * eval userId = pathParams.id
+        * def ctx = changePwd(requestHeaders, request, userId)
+        * def responseStatus = ctx.status
+        * def response = ctx.response
+
     # Post /create/user
     Scenario: pathMatches("/create/user") && methodIs("post")
         * def ctx = createUser(requestHeaders, request)

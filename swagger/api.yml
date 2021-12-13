@@ -326,6 +326,55 @@ paths:
                   error:
                     type: string
                     example: Unauthorized
+  /user/change-password/{userId}:
+    post:
+      description: Create User
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            example: Bearer RgqJh3tKUENgZYSZjMZH
+          required: true
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        description: User Password Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                  example: APSpassword
+                new_password:
+                  type: string
+                  example: APSpassword_new
+      responses:
+        "200":
+          description: Successfully Updated User Password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Updated New Password Successfully..
+        "401":
+          description: Authenticated Failure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
   /post/list:
     get:
       description: Get Post List
